@@ -57,7 +57,7 @@ server.get("/",(req,res)=>{
 })
 
 server.post("/register",async (req,res)=>{
-  console.log("HHHHHHHHHHH")
+
     let {name,username,phonenumber,email,password}=req.body;
     const userExistUserName=await User.findOne({username});
    
@@ -166,6 +166,7 @@ server.post("/login",async(req,res)=>{
       return res.send({
         status:200,
         data:userDb,
+        message:"Login successfully"
       })
     }
     else{
