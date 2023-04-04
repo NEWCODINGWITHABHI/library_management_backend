@@ -64,7 +64,7 @@ server.post("/register",async (req,res)=>{
   const userExistEmail=await User.findOne({email});
  
     if(userExistEmail||userExistUserName){
-      res.send({
+      res.json({
         status:400,
         message:"User already exist"
       })
@@ -86,14 +86,14 @@ server.post("/register",async (req,res)=>{
       try{
        const userDb=await user.save();
       
-       return res.send({
+       return res.json({
         status:201,
         message:"Registered successfully",
         data:userDb,
        })
 
       }catch(error){
-        return res.send({
+        return res.json({
           status:500,
           message:"Database error",
           error:error
@@ -122,7 +122,7 @@ server.get("/verify/:token", async (req, res) => {
       console.log(userDb);
       return res.status(200).redirect("/login");
     } catch (error) {
-      return res.send({
+      return res.json({
         status: 400,
         message: "Invalid Authentication Link",
         error: error,
@@ -152,7 +152,7 @@ server.post("/login",async(req,res)=>{
       const isMatch=await bcrypt.compare(password,userDb.password);
  
       if(!isMatch){
-        return res.send({
+        return res.json({
           status:400,
           message:"password Does not match"
         })
@@ -163,20 +163,20 @@ server.post("/login",async(req,res)=>{
         email:userDb.email,
         userId:userDb._id,
       }
-      return res.send({
+      return res.json({
         status:200,
         data:userDb,
         message:"Login successfully"
       })
     }
     else{
-      return res.send({
+      return res.json({
         status:400,
         message:"Please register first "
       })
     }
   }catch(error){
-    return res.send({
+    return res.json({
       status:500,
       message:"Database error",
       error:error,
@@ -196,7 +196,6 @@ server.post("/book",async (req,res)=>{
       });
    
      await book.save();
-     console.log(book,"tokennnnn");
     const books = await Book.find({});
     console.log(books);
     res.json(books);
