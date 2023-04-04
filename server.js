@@ -214,7 +214,7 @@ server.delete("/book/:id",async(req,res)=>{
 
    const  deleteData=await Book.deleteOne({_id:req.params.id})
    console.log("deleteddd")
-    res.send(deleteData);
+    res.json(deleteData);
   }catch(e){
     res.status(500).send(e)
   }
