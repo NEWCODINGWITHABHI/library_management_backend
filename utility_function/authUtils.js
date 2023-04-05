@@ -10,25 +10,32 @@ const generateJWTToken = (email) => {
   return JWT_TOKEN;
 };
 
-const sendVerificationToken = (email, verificationToken) => {
-  console.log(email, verificationToken);
+const sendVerificationToken = ({ email, verificationToken }) => {
+  console.log(
+    "email...",
+    email,
+    "vtoken",
+    verificationToken,
+    "secret key",
+    SECRET_KEY
+  );
 
   let mailer = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
+    port: 8000,
     secure: true,
     service: "Gmail",
     auth: {
       user: "abhishekkumar01021995@gmail.com",
-      pass: "ttcxwvudcdcwennv",
+      pass: "czldgichihcgwkqx",
     },
   });
 
   let mailOptions = {
-    from: "Todo App pvt lmt",
+    from: "Library Management ",
     to: email,
-    subject: "Email verification for TODO APP",
-    html: `click <a href="http://localhost:8000/verify/${verificationToken}">Here</a>`,
+    subject: "Email verification for Library Management application",
+    html: `click the below link to verify your email<a href="https://librarymanagementbackend-production.up.railway.app/verify/${verificationToken}">Here</a>`,
   };
 
   mailer.sendMail(mailOptions, function (err, response) {
@@ -41,3 +48,6 @@ module.exports = {
   generateJWTToken,
   sendVerificationToken,
 };
+
+// user: "abhishekkumar01021995@gmail.com",
+// pass: "czldgichihcgwkqx",
