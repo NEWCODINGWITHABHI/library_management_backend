@@ -73,13 +73,15 @@ server.post("/register", async (req, res) => {
 
     try {
       const userDb = await user.save();
-
-      sendVerificationToken({ verificationToken, email });
-      return res.json({
-        status: 201,
-        message: "Registered successfully ,Please verify email",
-        data: userDb,
-      });
+      if (userDb) {
+        id = userDb._id;
+        sendVerificationToken({ verificationToken, email, id });
+        return res.json({
+          status: 201,
+          message: "Registered successfully ,Please verify email",
+          data: userDb,
+        });
+      }
     } catch (error) {
       return res.json({
         status: 500,
@@ -91,30 +93,32 @@ server.post("/register", async (req, res) => {
 });
 
 server.get("/verify/:token", async (req, res) => {
-  console.log(req.params, "inside verify");
+  console.log(req.params);
   const token = req.params.token;
-  console.log("Secret key hhhhhhhh ", SECRET_KEY);
+
+  console.log("after checking ", token, "mail chemmmm");
+
   jwt.verify(token, SECRET_KEY, async (err, decodedData) => {
     if (err) throw err;
+    console.log("decoded data", decodedData, "decodedd data");
 
     try {
-      const usercheckDb = await userSchema.findOne({
-        email: decodedData.email,
+      const userDb = await User.findOneAndUpdate(
+        { email: decodedData.email },
+        { emailAuthenticated: true }
+      );
+
+      console.log(userDb);
+
+      return res
+        .status(200)
+        .redirect("https://library-management-weld.vercel.app/login");
+      return res.json({
+        status: 201,
+        message: "Verified Email",
       });
-
-      if (usercheckDb.resetPassword) {
-        return res.status(200).redirect("/newpassword");
-      } else {
-        const userDb = await userSchema.findOneAndUpdate(
-          { email: decodedData.email },
-          { emailAuthenticated: true }
-        );
-
-        console.log(userDb);
-        return res.status(200).redirect("/login");
-      }
     } catch (error) {
-      return res.send({
+      return res.json({
         status: 400,
         message: "Invalid Authentication Link",
         error: error,
@@ -122,35 +126,6 @@ server.get("/verify/:token", async (req, res) => {
     }
   });
 });
-
-// server.get("/verify/:token", async (req, res) => {
-//   console.log(req.params);
-//   const token = req.params.token;
-
-//   jwt.verify(token, SECRET_KEY, async (err, decodedData) => {
-//     if (err) throw err;
-//     console.log(decodedData);
-
-//     try {
-//       const userDb = await UserSchema.findOneAndUpdate(
-//         { email: decodedData.email },
-//         { emailAuthenticated: true }
-//       );
-
-//       console.log(userDb);
-//       return res.json({
-//         status:201,
-//         message:"Verified Email"
-//       });
-//     } catch (error) {
-//       return res.json({
-//         status: 400,
-//         message: "Invalid Authentication Link",
-//         error: error,
-//       });
-//     }
-//   });
-// });
 
 server.post("/login", async (req, res) => {
   const { username, email, password } = req.body;

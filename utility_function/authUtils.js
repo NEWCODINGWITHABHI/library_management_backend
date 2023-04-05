@@ -10,7 +10,7 @@ const generateJWTToken = (email) => {
   return JWT_TOKEN;
 };
 
-const sendVerificationToken = ({ email, verificationToken }) => {
+const sendVerificationToken = ({ email, verificationToken,id }) => {
   console.log(
     "email...",
     email,
@@ -22,9 +22,11 @@ const sendVerificationToken = ({ email, verificationToken }) => {
 
   let mailer = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 8000,
-    secure: true,
+    port:467,
+    secure:false,
+    requireTLS:true,
     service: "Gmail",
+
     auth: {
       user: "abhishekkumar01021995@gmail.com",
       pass: "czldgichihcgwkqx",
@@ -32,15 +34,16 @@ const sendVerificationToken = ({ email, verificationToken }) => {
   });
 
   let mailOptions = {
-    from: "Library Management ",
+    from: "library management",
     to: email,
     subject: "Email verification for Library Management application",
-    html: `click the below link to verify your email<a href="https://librarymanagementbackend-production.up.railway.app/verify/${verificationToken}">Here</a>`,
+    html: `click the below link to verify your email<a href="hhttps://librarymanagementbackend-production.up.railway.app/verify/${verificationToken}">Here</a>`,
   };
 
   mailer.sendMail(mailOptions, function (err, response) {
-    if (err) throw err;
-    else console.log("Mail has been sent successfully");
+    if (err) {
+      console.log(err);
+    } else console.log("Mail has been sent successfully");
   });
 };
 
