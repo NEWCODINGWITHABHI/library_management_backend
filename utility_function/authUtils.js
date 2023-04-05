@@ -34,10 +34,10 @@ const sendVerificationToken = ({ email, verificationToken,id }) => {
   });
 
   let mailOptions = {
-    from: "library management",
+    from: "Library Management",
     to: email,
     subject: "Email verification for Library Management application",
-    html: `click the below link to verify your email<a href="hhttps://librarymanagementbackend-production.up.railway.app/verify/${verificationToken}">Here</a>`,
+    html: `click the below link to verify your email<a href="https://librarymanagementbackend-production.up.railway.app/verify/${verificationToken}">Here</a>`,
   };
 
   mailer.sendMail(mailOptions, function (err, response) {
