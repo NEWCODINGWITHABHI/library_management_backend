@@ -177,13 +177,14 @@ server.post("/login", async (req, res) => {
 });
 
 server.post("/book", async (req, res) => {
-  let { title, author, price, category } = req.body;
-  console.log("hiii");
+  let { title, author, price, category, isUpdate } = req.body;
+  console.log(req.body, "book from frontend");
   const book = new Book({
     title,
     author,
     price,
     category,
+    isUpdate,
   });
 
   await book.save();
@@ -201,27 +202,32 @@ server.get("/book", async (req, res) => {
 server.delete("/book/:id", async (req, res) => {
   try {
     const deleteData = await Book.deleteOne({ _id: req.params.id });
-    console.log("deleteddd");
-    res.json(deleteData);
+    console.log(deleteData, "deleteddd");
+    res.json({
+      deleteData,
+      message: "book deleted successfully",
+    });
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).json(e);
   }
 });
 
-server.put("/update-book/:id", async (req, res) => {
+server.put("/updatebook/:id", async (req, res) => {
   const id = req.params.id;
-  const { title, author, price, category } = req.body;
+  const { title, author, price, category, isUpdate } = req.body;
+  console.log(req.body, "updated fron frontend.............");
   const updatedBook = new Book({
     title,
     author,
     price,
     category,
+    isUpdate,
   });
 
   try {
     await Book.updateOne(
       { _id: id },
-      { $set: { title, author, price, category } }
+      { $set: { title, author, price, category ,isUpdate} }
     );
     console.log("book successfulyy updated");
     res.status(200).json(updatedBook);
